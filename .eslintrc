@@ -1,0 +1,50 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended",
+    "plugin:prettier/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended"
+  ],
+  "plugins": ["@typescript-eslint", "react"],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true,
+      "jsx": true
+    }
+  },
+  "rules": {
+    "curly": ["warn", "all"],
+    "no-console": "warn",
+    "no-duplicate-imports": "error",
+    "react/prop-types": 0,
+    "react/display-name": 1,
+    "@typescript-eslint/member-delimiter-style": "off",
+    "@typescript-eslint/type-annotation-spacing": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-empty-function": [
+      "error",
+      {
+        "allow": ["functions", "arrowFunctions"]
+      }
+    ],
+    "@typescript-eslint/ban-ts-comment": "off",
+    "cypress/no-unnecessary-waiting": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-var-requires": "off"
+  }
+}
