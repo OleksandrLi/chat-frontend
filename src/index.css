@@ -15,3 +15,8 @@ code {
 #root {
   font-family: Poppins, system-ui, sans-serif;
 }
+
+a {
+  color: #000;
+  text-decoration: none;
+}

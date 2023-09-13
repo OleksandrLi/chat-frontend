@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
-
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Boundary } from "../shared/errors";
 import ROUTES from "./constants";
 import PublicRoutes from "./PublicRoutes";
@@ -26,12 +25,15 @@ const AppRoutes = () => {
         <Route element={<PrivateRoutes />}>
           <Route path={ROUTES.home} element={<Pages.Home />} />
           <Route path={ROUTES.profile} element={<Pages.Profile />} />
+          <Route path={ROUTES.dynamic.users()} element={<Pages.User />} />
         </Route>
 
         <Route element={<PublicRoutes />}>
           <Route path={ROUTES.signup} element={<Pages.SingUp />} />
           <Route path={ROUTES.login} element={<Pages.Login />} />
         </Route>
+
+        <Route path="*" element={<Navigate to={ROUTES.home} replace />} />
       </Routes>
     </Boundary>
   );

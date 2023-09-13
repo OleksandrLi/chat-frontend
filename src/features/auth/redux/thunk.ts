@@ -98,6 +98,9 @@ export const getProfileThunk = createAsyncThunk<
     );
     return data;
   } catch (error) {
+    clearStorage(STORAGE_KEYS.access);
+    clearStorage(STORAGE_KEYS.refresh);
+    clearStorage(STORAGE_KEYS.currentAccount);
     return thunkAPI.rejectWithValue("Server error!");
   }
 });

@@ -2,12 +2,12 @@ import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 import authReducer from "../features/auth/redux/slice";
-// import chatsReducer from "../features/chats/redux/slice";
+import chatsReducer from "../features/chats/redux/slice";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
-    // chats: chatsReducer
+    chats: chatsReducer,
   },
 });
 
