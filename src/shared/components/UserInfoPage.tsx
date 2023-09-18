@@ -27,7 +27,7 @@ const UserInfoPage: React.FC<UserInfoPageProps> = ({
     if (e.currentTarget.files) {
       const file = e.currentTarget.files[0];
       const form = new FormData();
-      form.append("image", file as Blob);
+      form.append("file", file as Blob);
       onUpdateAvatar(form);
     }
   };
@@ -128,19 +128,21 @@ const UserInfoPage: React.FC<UserInfoPageProps> = ({
           >
             {user.email}
           </Typography>
-          <Box>
-            <Button
-              variant="outlined"
-              sx={{
-                marginTop: "10px",
-                fontSize: "16px",
-                textTransform: "none",
-              }}
-              onClick={handleStartChat}
-            >
-              {activeChat ? "Start Chat" : "Create Chat"}
-            </Button>
-          </Box>
+          {createChat ? (
+            <Box>
+              <Button
+                variant="outlined"
+                sx={{
+                  marginTop: "10px",
+                  fontSize: "16px",
+                  textTransform: "none",
+                }}
+                onClick={handleStartChat}
+              >
+                {activeChat ? "Start Chat" : "Create Chat"}
+              </Button>
+            </Box>
+          ) : null}
         </Box>
       </Box>
     </>

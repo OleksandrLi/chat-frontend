@@ -7,10 +7,14 @@ import {
   getUsersThunk,
 } from "../redux/thunk";
 import { CreateRoomRequest } from "../types";
+import { useNavigate } from "react-router";
+import ROUTES from "../../../routes/constants";
 
 export default function useChats() {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state.chats);
+
+  const navigate = useNavigate();
 
   const onGetUsers = useCallback(() => {
     dispatch(getUsersThunk());
@@ -32,7 +36,11 @@ export default function useChats() {
 
   const onCreateChat = useCallback(
     (body: CreateRoomRequest) => {
-      dispatch(createChatWithUserThunk(body));
+      dispatch(createChatWithUserThunk(body)).then((resp: any) => {
+        if (resp.payload.room.roomId) {
+          navigate(ROUTES.dynamic.chats(resp.payload.room.roomId));
+        }
+      });
     },
     [dispatch]
   );
