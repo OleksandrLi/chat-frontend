@@ -1,19 +1,27 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import { useAuth } from "../../hooks";
 import { User } from "../../features/auth/types";
 import Header from "./UserInfoHeader";
+import { IRoom } from "../../features/chats/types";
+import { useNavigate } from "react-router";
+import ROUTES from "../../routes/constants";
 
 type UserInfoPageProps = {
   user: User;
   isCurrentAccount?: boolean;
+  activeChat?: IRoom | null;
+  createChat?: () => void;
 };
 
 const UserInfoPage: React.FC<UserInfoPageProps> = ({
   user,
   isCurrentAccount,
+  activeChat,
+  createChat,
 }) => {
   const { onUpdateAvatar } = useAuth();
+  const navigate = useNavigate();
 
   const onSelectAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.files) {
@@ -21,6 +29,14 @@ const UserInfoPage: React.FC<UserInfoPageProps> = ({
       const form = new FormData();
       form.append("image", file as Blob);
       onUpdateAvatar(form);
+    }
+  };
+
+  const handleStartChat = () => {
+    if (activeChat) {
+      navigate(ROUTES.dynamic.chats(activeChat.roomId));
+    } else if (createChat) {
+      createChat();
     }
   };
 
@@ -112,6 +128,19 @@ const UserInfoPage: React.FC<UserInfoPageProps> = ({
           >
             {user.email}
           </Typography>
+          <Box>
+            <Button
+              variant="outlined"
+              sx={{
+                marginTop: "10px",
+                fontSize: "16px",
+                textTransform: "none",
+              }}
+              onClick={handleStartChat}
+            >
+              {activeChat ? "Start Chat" : "Create Chat"}
+            </Button>
+          </Box>
         </Box>
       </Box>
     </>

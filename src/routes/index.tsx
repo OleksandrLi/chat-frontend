@@ -26,6 +26,7 @@ const AppRoutes = () => {
           <Route path={ROUTES.home} element={<Pages.Home />} />
           <Route path={ROUTES.profile} element={<Pages.Profile />} />
           <Route path={ROUTES.dynamic.users()} element={<Pages.User />} />
+          <Route path={ROUTES.dynamic.chats()} element={<Pages.Chat />} />
         </Route>
 
         <Route element={<PublicRoutes />}>

@@ -1,6 +1,16 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { OneUserResponse, UsersResponse } from "../types";
-import { getOneUserAPI, getUsersAPI } from "../api";
+import {
+  CreateRoomRequest,
+  OneUserResponse,
+  RoomResponse,
+  UsersResponse,
+} from "../types";
+import {
+  getChatWithUserAPI,
+  getOneUserAPI,
+  getUsersAPI,
+  createChatWithUserAPI,
+} from "../api";
 
 export const getUsersThunk = createAsyncThunk<
   UsersResponse,
@@ -23,6 +33,34 @@ export const getOneUserThunk = createAsyncThunk<
 >("get_one_user", async (id, thunkAPI) => {
   try {
     const response = await getOneUserAPI(id);
+
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue("Server error!");
+  }
+});
+
+export const getChatByUsersThunk = createAsyncThunk<
+  RoomResponse,
+  number[],
+  { rejectValue: string }
+>("get-chat-by-users-thunk", async ([user1Id, user2Id], thunkAPI) => {
+  try {
+    const response = await getChatWithUserAPI(user1Id, user2Id);
+
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue("Server error!");
+  }
+});
+
+export const createChatWithUserThunk = createAsyncThunk<
+  RoomResponse,
+  CreateRoomRequest,
+  { rejectValue: string }
+>("create-chat", async (data, thunkAPI) => {
+  try {
+    const response = await createChatWithUserAPI(data);
 
     return response.data;
   } catch (error) {

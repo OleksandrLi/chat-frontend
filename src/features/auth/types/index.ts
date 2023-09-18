@@ -3,6 +3,7 @@ interface User {
   name: string;
   email: string;
   image: string;
+  socketId?: string;
 }
 
 interface UserSignUpData {

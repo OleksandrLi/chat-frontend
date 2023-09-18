@@ -5,6 +5,7 @@ const ROUTES = {
   signup: "/signup",
   dynamic: {
     users: (id = ":id") => `/users/${id}`,
+    chats: (chatId = ":chatId") => `/chats/${chatId}`,
   },
 };
 

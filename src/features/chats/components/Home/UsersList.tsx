@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Box, List, ListItem, Typography } from "@mui/material";
-import useChats from "../../hooks/useAuth";
+import useChats from "../../hooks/useChats";
 import { useNavigate } from "react-router";
 import ROUTES from "../../../../routes/constants";
 
