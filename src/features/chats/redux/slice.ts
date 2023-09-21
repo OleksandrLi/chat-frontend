@@ -3,9 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import { User } from "../../auth/types";
 import {
   createChatWithUserThunk,
+  getChatByRoomIdThunk,
   getChatByUsersThunk,
   getOneUserThunk,
   getUsersThunk,
+  sendMessageThunk,
 } from "./thunk";
 import { IRoom } from "../types";
 
@@ -54,11 +56,25 @@ export const chatsSlice = createSlice({
     });
     builder.addCase(getChatByUsersThunk.fulfilled, (state, { payload }) => {
       state.isLoading = false;
-      state.activeChat = payload.room ? payload.room : null;
+      state.activeChat = payload.room;
     });
     builder.addCase(getChatByUsersThunk.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
+      state.activeChat = null;
+    });
+
+    builder.addCase(getChatByRoomIdThunk.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getChatByRoomIdThunk.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.activeChat = payload.room;
+    });
+    builder.addCase(getChatByRoomIdThunk.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+      state.activeChat = null;
     });
 
     builder.addCase(createChatWithUserThunk.pending, (state) => {
@@ -69,6 +85,20 @@ export const chatsSlice = createSlice({
       state.activeChat = payload.room;
     });
     builder.addCase(createChatWithUserThunk.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
+
+    builder.addCase(sendMessageThunk.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(sendMessageThunk.fulfilled, (state) => {
+      state.isLoading = false;
+      // if (state.activeChat) {
+      //   state.activeChat.messages = payload.room?.messages;
+      // }
+    });
+    builder.addCase(sendMessageThunk.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     });

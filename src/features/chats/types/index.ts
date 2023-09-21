@@ -11,15 +11,17 @@ interface OneUserResponse {
 interface IRoom {
   id: number;
   roomId: string;
-  users: number[];
+  usersIds: number[];
+  messages: Message[];
 }
 
 interface RoomResponse {
-  room: IRoom | null;
+  room: IRoom;
 }
 
 interface CreateRoomRequest {
-  users: number[];
+  usersIds: number[];
+  users: User[];
 }
 
 interface Message {
@@ -27,6 +29,7 @@ interface Message {
   timeSent: string;
   message: string;
   roomId: string;
+  messageId: string;
 }
 
 interface ServerToClientEvents {

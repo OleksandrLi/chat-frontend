@@ -17,7 +17,10 @@ const User = () => {
   } = useChats();
 
   const createChat = () => {
-    onCreateChat({ users: [selectedUser.id, currentUser.id] });
+    onCreateChat({
+      usersIds: [selectedUser.id, currentUser.id],
+      users: [currentUser, selectedUser],
+    });
   };
 
   useEffect(() => {

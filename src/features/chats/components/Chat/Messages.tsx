@@ -2,6 +2,7 @@ import React from "react";
 import { User } from "../../../auth/types";
 import { Message } from "../../types";
 import { Box, Typography } from "@mui/material";
+import { useChats } from "../../../../hooks";
 
 type MessageProps = {
   user: User;
@@ -9,21 +10,50 @@ type MessageProps = {
 };
 
 export const Messages: React.FC<MessageProps> = ({ user, messages }) => {
+  const { activeChat } = useChats();
+
   return (
     <Box
       sx={{
         width: "100%",
         height: "calc(100% - 52px)",
         display: "flex",
-        flexDirection: "column-reverse",
+        flexDirection: "column",
         overflowY: "scroll",
         paddingRight: "10px",
       }}
     >
-      {messages?.map((message, index) => {
+      <Box
+        sx={{
+          marginTop: "auto",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {activeChat?.messages?.length ? (
+          <MessagesList user={user} messages={activeChat.messages} />
+        ) : null}
+        <MessagesList user={user} messages={messages} />
+      </Box>
+    </Box>
+  );
+};
+
+type MessagesListProps = {
+  user: User;
+  messages: Message[];
+};
+
+export const MessagesList: React.FC<MessagesListProps> = ({
+  user,
+  messages,
+}) => {
+  return (
+    <>
+      {messages?.map((message) => {
         return (
           <Box
-            key={index}
+            key={message.messageId}
             sx={{
               fontSize: "14px",
               marginLeft: message.user.id === user.id ? "auto" : "initial",
@@ -60,6 +90,6 @@ export const Messages: React.FC<MessageProps> = ({ user, messages }) => {
           </Box>
         );
       })}
-    </Box>
+    </>
   );
 };

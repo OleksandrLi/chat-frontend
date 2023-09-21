@@ -9,7 +9,7 @@ import {
   refreshTokensThunk,
   updateAvatarThunk,
 } from "../redux/thunk";
-import { UserSignUpData, LoginParams, UpdateAvatarParam } from "../types";
+import { UserSignUpData, LoginParams } from "../types";
 import { clearStorage, STORAGE_KEYS } from "../../../utils/localStorage";
 import { removeToken } from "../redux/slice";
 

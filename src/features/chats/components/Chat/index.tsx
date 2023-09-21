@@ -3,7 +3,7 @@ import { io, Socket } from "socket.io-client";
 import { Box } from "@mui/material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 
-import { useAuth } from "../../../../hooks";
+import { useAuth, useChats } from "../../../../hooks";
 import { useNavigate, useParams } from "react-router";
 import { Messages } from "./Messages";
 import { MessageForm } from "./MessageForm";
@@ -27,6 +27,8 @@ function Chat() {
   const navigate = useNavigate();
 
   const { currentUser } = useAuth();
+  const { onSendMessage, onGetChatByRoomId, activeChat } = useChats();
+
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -58,17 +60,31 @@ function Chat() {
   }, []);
 
   const sendMessage = (message: string) => {
-    socket.emit("chat", {
-      user: {
-        id: currentUser.id,
-        name: currentUser.name,
-        socketId: socket.id,
-      },
-      timeSent: new Date(Date.now()).toLocaleString("en-US"),
-      message,
-      roomId: chatId,
-    } as any);
+    const getMessageData = (isSocket?: boolean) => {
+      const messageData = {
+        user: {
+          id: currentUser.id,
+          name: currentUser.name,
+        } as any,
+        timeSent: new Date(Date.now()).toLocaleString("en-US"),
+        message,
+        roomId: chatId,
+      };
+      if (isSocket) {
+        messageData.user.socketId = socket.id;
+      }
+      return messageData;
+    };
+
+    socket.emit("chat", getMessageData(true) as any);
+    onSendMessage(getMessageData() as Message);
   };
+
+  useEffect(() => {
+    if (!activeChat && chatId) {
+      onGetChatByRoomId(chatId);
+    }
+  }, [activeChat, chatId]);
 
   return (
     <Box

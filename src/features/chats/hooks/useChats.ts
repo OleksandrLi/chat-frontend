@@ -2,11 +2,13 @@ import { useCallback } from "react";
 import { useAppSelector, useAppDispatch } from "../../../store";
 import {
   createChatWithUserThunk,
+  getChatByRoomIdThunk,
   getChatByUsersThunk,
   getOneUserThunk,
   getUsersThunk,
+  sendMessageThunk,
 } from "../redux/thunk";
-import { CreateRoomRequest } from "../types";
+import { CreateRoomRequest, Message } from "../types";
 import { useNavigate } from "react-router";
 import ROUTES from "../../../routes/constants";
 
@@ -34,6 +36,13 @@ export default function useChats() {
     [dispatch]
   );
 
+  const onGetChatByRoomId = useCallback(
+    (roomId: string) => {
+      dispatch(getChatByRoomIdThunk(roomId));
+    },
+    [dispatch]
+  );
+
   const onCreateChat = useCallback(
     (body: CreateRoomRequest) => {
       dispatch(createChatWithUserThunk(body)).then((resp: any) => {
@@ -45,11 +54,20 @@ export default function useChats() {
     [dispatch]
   );
 
+  const onSendMessage = useCallback(
+    (body: Message) => {
+      dispatch(sendMessageThunk(body));
+    },
+    [dispatch]
+  );
+
   return {
     ...state,
     onGetUsers,
     onGetOneUsers,
     onGetChatByUsers,
+    onGetChatByRoomId,
     onCreateChat,
+    onSendMessage,
   };
 }
