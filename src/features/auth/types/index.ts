@@ -4,6 +4,7 @@ interface User {
   email: string;
   image: string;
   socketId?: string;
+  isActive?: boolean;
 }
 
 interface UserSignUpData {

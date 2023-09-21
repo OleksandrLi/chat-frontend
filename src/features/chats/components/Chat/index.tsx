@@ -14,6 +14,8 @@ import {
 } from "../../types";
 import config from "../../../../constants/config";
 import ROUTES from "../../../../routes/constants";
+import { User } from "../../../auth/types";
+import { Header } from "./Header";
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   config.API_URL,
@@ -31,33 +33,54 @@ function Chat() {
 
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [users, setUsers] = useState<User[]>(activeChat?.users || []);
 
   useEffect(() => {
-    socket.on("connect", () => {
-      socket.emit("join_room", {
-        roomId: chatId as string,
-        user: currentUser,
-        socketId: socket.id,
+    if (currentUser.id) {
+      socket.on("connect", () => {
+        socket.emit("join_room", {
+          roomId: chatId as string,
+          userId: currentUser.id,
+          socketId: socket.id,
+        });
+        setIsConnected(true);
       });
 
-      setIsConnected(true);
-    });
+      socket.on("disconnect", () => {
+        setIsConnected(false);
+      });
 
-    socket.on("disconnect", () => {
-      setIsConnected(false);
-    });
+      socket.on("chat", (e) => {
+        setMessages((messages) => [e, ...messages]);
+      });
 
-    socket.on("chat", (e) => {
-      setMessages((messages) => [e, ...messages]);
-    });
+      socket.on("join_room", (e) => {
+        setUsers(e);
+      });
 
-    socket.connect();
+      socket.on("leave_room", (e) => {
+        setUsers(e);
+      });
+
+      socket.connect();
+    }
+
     return () => {
       socket.off("connect");
       socket.off("disconnect");
       socket.off("chat");
+      socket.off("join_room");
+
+      socket.emit("leave_room", {
+        roomId: chatId as string,
+        userId: currentUser.id,
+        socketId: socket.id,
+      });
+
+      socket.off("leave_room");
+      socket.disconnect();
     };
-  }, []);
+  }, [currentUser.id, chatId]);
 
   const sendMessage = (message: string) => {
     const getMessageData = (isSocket?: boolean) => {
@@ -94,8 +117,11 @@ function Chat() {
         minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
+        flexDirection: "column",
+        alignItems: "center",
       }}
     >
+      <Header users={users} />
       <Box
         sx={{
           margin: "10px",
@@ -108,7 +134,8 @@ function Chat() {
           padding: "10px",
           boxSizing: "border-box",
           position: "relative",
-          maxHeight: "95vh",
+          maxHeight: "85vh",
+          flex: "1",
         }}
       >
         <Box

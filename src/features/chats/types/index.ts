@@ -13,6 +13,7 @@ interface IRoom {
   roomId: string;
   usersIds: number[];
   messages: Message[];
+  users: User[];
 }
 
 interface RoomResponse {
@@ -34,11 +35,14 @@ interface Message {
 
 interface ServerToClientEvents {
   chat: (e: Message) => void;
+  join_room: (e: User[]) => void;
+  leave_room: (e: User[]) => void;
 }
 
 interface ClientToServerEvents {
   chat: (e: Message) => void;
-  join_room: (e: { roomId: string; user: User; socketId: string }) => void;
+  join_room: (e: { roomId: string; userId: number; socketId: string }) => void;
+  leave_room: (e: { roomId: string; userId: number; socketId: string }) => void;
 }
 
 export type {
