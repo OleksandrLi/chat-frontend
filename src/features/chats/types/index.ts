@@ -27,15 +27,16 @@ interface CreateRoomRequest {
 
 interface Message {
   user: User;
-  timeSent: string;
+  timeSent: Date;
   message: string;
   roomId: string;
   messageId: string;
+  isRead?: boolean;
 }
 
 interface ServerToClientEvents {
   chat: (e: Message) => void;
-  join_room: (e: User[]) => void;
+  join_room: (e: { users: User[]; messages: Message[] }) => void;
   leave_room: (e: User[]) => void;
 }
 

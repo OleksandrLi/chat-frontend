@@ -3,6 +3,9 @@ import { User } from "../../../auth/types";
 import { Message } from "../../types";
 import { Box, Typography } from "@mui/material";
 import { useChats } from "../../../../hooks";
+import CheckIcon from "@mui/icons-material/Check";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import dayjs from "dayjs";
 
 type MessageProps = {
   user: User;
@@ -51,9 +54,9 @@ export const Messages: React.FC<MessageProps> = ({ user, messages }) => {
           gap: "10px",
         }}
       >
-        {activeChat?.messages?.length ? (
-          <MessagesList user={user} messages={activeChat.messages} />
-        ) : null}
+        {/*{activeChat?.messages?.length ? (*/}
+        {/*  <MessagesList user={user} messages={activeChat.messages} />*/}
+        {/*) : null}*/}
         <MessagesList user={user} messages={messages} />
       </Box>
     </Box>
@@ -78,6 +81,7 @@ export const MessagesList: React.FC<MessagesListProps> = ({
             sx={{
               fontSize: "14px",
               marginLeft: message.user.id === user.id ? "auto" : "initial",
+              marginRight: message.user.id !== user.id ? "auto" : "initial",
               display: "flex",
               flexDirection: "column",
               gap: "3px",
@@ -106,16 +110,31 @@ export const MessagesList: React.FC<MessagesListProps> = ({
                 {message.message}
               </Typography>
             </Box>
-            <Typography
-              component="span"
+            <Box
               sx={{
-                fontStyle: "italic",
-                fontSize: "11px",
-                // textAlign: message.user.id === user.id ? "right" : "left",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: "5px",
+
+                svg: {
+                  width: "12px",
+                  height: "12px",
+                },
               }}
             >
-              {message.timeSent}
-            </Typography>
+              {message.isRead ? <DoneAllIcon /> : <CheckIcon />}
+              <Typography
+                component="span"
+                sx={{
+                  fontStyle: "italic",
+                  fontSize: "11px",
+                  // textAlign: message.user.id === user.id ? "right" : "left",
+                }}
+              >
+                {dayjs(message.timeSent).format("YYYY-MM-DD HH:mm:ss")}
+              </Typography>
+            </Box>
           </Box>
         );
       })}

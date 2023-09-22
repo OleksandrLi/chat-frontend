@@ -51,11 +51,12 @@ function Chat() {
       });
 
       socket.on("chat", (e) => {
-        setMessages((messages) => [e, ...messages]);
+        setMessages((messages) => [...messages, e]);
       });
 
       socket.on("join_room", (e) => {
-        setUsers(e);
+        setUsers(e.users);
+        setMessages(e.messages);
       });
 
       socket.on("leave_room", (e) => {
@@ -83,15 +84,17 @@ function Chat() {
   }, [currentUser.id, chatId]);
 
   const sendMessage = (message: string) => {
+    const activeUsers = users.filter((user) => user.isActive);
     const getMessageData = (isSocket?: boolean) => {
       const messageData = {
         user: {
           id: currentUser.id,
           name: currentUser.name,
         } as any,
-        timeSent: new Date(Date.now()).toLocaleString("en-US"),
+        timeSent: new Date(Date.now()),
         message,
         roomId: chatId,
+        isRead: activeUsers.length === 2,
       };
       if (isSocket) {
         messageData.user.socketId = socket.id;
