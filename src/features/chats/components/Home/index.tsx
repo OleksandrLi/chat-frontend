@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import Header from "./Header";
 import { Box, Typography } from "@mui/material";
 import { useAuth } from "../../../../hooks";
 import { useNavigate } from "react-router";
 import ROUTES from "../../../../routes/constants";
 import UsersList from "./UsersList";
+import { WebsocketContext } from "../../../../shared/context/WebsocketContext";
 
 const Home = () => {
   const { onLogout } = useAuth();
   const navigate = useNavigate();
+  const websocket = useContext(WebsocketContext);
 
   const handleLogout = () => {
+    websocket?.disconnect();
     onLogout();
     navigate(ROUTES.login);
   };

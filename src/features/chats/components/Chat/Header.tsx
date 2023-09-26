@@ -44,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({ users }) => {
       <Typography>{user?.name}</Typography>
       <Typography
         sx={{
-          background: user?.isActive ? "#228B22" : "#bf2323",
+          background: user?.isOnline ? "#228B22" : "#bf2323",
           color: "transparent",
           width: "9px",
           height: "9px",

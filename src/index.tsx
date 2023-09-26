@@ -6,6 +6,7 @@ import store from "./store";
 import AppRoutes from "./routes";
 import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
+import { WebsocketProvider } from "./shared/context/WebsocketContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -14,7 +15,9 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <AppRoutes />
+        <WebsocketProvider>
+          <AppRoutes />
+        </WebsocketProvider>
       </BrowserRouter>
     </Provider>
   </React.StrictMode>

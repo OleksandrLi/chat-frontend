@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { User } from "../../auth/types";
 import {
@@ -10,6 +10,7 @@ import {
   sendMessageThunk,
 } from "./thunk";
 import { IRoom } from "../types";
+import { OnlineOfflineStatusEvent } from "../../../constants/types";
 
 const initialState = {
   isAuth: false,
@@ -23,7 +24,19 @@ const initialState = {
 export const chatsSlice = createSlice({
   name: "chats",
   initialState,
-  reducers: {},
+  reducers: {
+    setStatus: (state, action: PayloadAction<OnlineOfflineStatusEvent>) => {
+      state.selectedUser =
+        state.selectedUser?.id === action.payload.userId
+          ? { ...state.selectedUser, isOnline: action.payload.isOnline }
+          : state.selectedUser;
+      state.users = state.users.map((user) =>
+        user.id === action.payload.userId
+          ? { ...user, isOnline: action.payload.isOnline }
+          : user
+      );
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getUsersThunk.pending, (state) => {
       state.isLoading = true;
@@ -105,4 +118,5 @@ export const chatsSlice = createSlice({
   },
 });
 
+export const { setStatus } = chatsSlice.actions;
 export default chatsSlice.reducer;

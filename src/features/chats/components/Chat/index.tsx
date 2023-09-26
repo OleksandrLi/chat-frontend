@@ -84,7 +84,7 @@ function Chat() {
   }, [currentUser.id, chatId]);
 
   const sendMessage = (message: string) => {
-    const activeUsers = users.filter((user) => user.isActive);
+    const activeUsers = users.filter((user) => user.isOnline);
     const getMessageData = (isSocket?: boolean) => {
       const messageData = {
         user: {

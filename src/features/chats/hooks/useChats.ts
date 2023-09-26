@@ -11,6 +11,7 @@ import {
 import { CreateRoomRequest, Message } from "../types";
 import { useNavigate } from "react-router";
 import ROUTES from "../../../routes/constants";
+import { setStatus } from "../redux/slice";
 
 export default function useChats() {
   const dispatch = useAppDispatch();
@@ -61,6 +62,13 @@ export default function useChats() {
     [dispatch]
   );
 
+  const onSetStatus = useCallback(
+    (payload: { userId: number; isOnline: boolean }) => {
+      dispatch(setStatus(payload));
+    },
+    [dispatch]
+  );
+
   return {
     ...state,
     onGetUsers,
@@ -69,5 +77,6 @@ export default function useChats() {
     onGetChatByRoomId,
     onCreateChat,
     onSendMessage,
+    onSetStatus,
   };
 }
