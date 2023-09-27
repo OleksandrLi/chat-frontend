@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../../auth/types";
 import {
   createChatWithUserThunk,
+  getActiveChatsThunk,
   getChatByRoomIdThunk,
   getChatByUsersThunk,
   getOneUserThunk,
@@ -19,6 +20,7 @@ const initialState = {
   users: [] as User[],
   selectedUser: {} as User,
   activeChat: null as null | IRoom,
+  chats: [] as IRoom[],
 };
 
 export const chatsSlice = createSlice({
@@ -35,6 +37,9 @@ export const chatsSlice = createSlice({
           ? { ...user, isOnline: action.payload.isOnline }
           : user
       );
+    },
+    setUser: (state, action) => {
+      state.selectedUser = action.payload.user;
     },
   },
   extraReducers: (builder) => {
@@ -115,8 +120,20 @@ export const chatsSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     });
+
+    builder.addCase(getActiveChatsThunk.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getActiveChatsThunk.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.chats = payload.rooms;
+    });
+    builder.addCase(getActiveChatsThunk.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
   },
 });
 
-export const { setStatus } = chatsSlice.actions;
+export const { setStatus, setUser } = chatsSlice.actions;
 export default chatsSlice.reducer;

@@ -1,20 +1,23 @@
 import React, { useEffect } from "react";
 import { Box, List, ListItem, Typography } from "@mui/material";
-import useChats from "../../hooks/useChats";
 import { useNavigate } from "react-router";
 import ROUTES from "../../../../routes/constants";
+import { User } from "../../../auth/types";
+import { useAuth, useChats } from "../../../../hooks";
 
-const UsersList = () => {
-  const { onGetUsers, users } = useChats();
+const CreatedChatsList = () => {
+  const { currentUser } = useAuth();
+  const { onGetActiveChats, chats, onSetUser } = useChats();
 
   const navigate = useNavigate();
 
-  const selectUser = (id: number) => {
-    navigate(ROUTES.dynamic.users(`${id}`));
+  const selectChat = (roomsId: string, user: User) => {
+    onSetUser({ user: user });
+    navigate(ROUTES.dynamic.chats(`${roomsId}`));
   };
 
   useEffect(() => {
-    onGetUsers();
+    onGetActiveChats();
   }, []);
 
   return (
@@ -22,18 +25,17 @@ const UsersList = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
         alignItems: "center",
       }}
     >
       <Typography component="p" fontWeight="600">
-        Users
+        Created Chats
       </Typography>
       <List>
-        {users.length
-          ? users.map((user) => (
+        {chats.length
+          ? chats.map((chat) => (
               <ListItem
-                key={user.id}
+                key={chat.roomId}
                 sx={{
                   gap: "10px",
                   cursor: "pointer",
@@ -42,13 +44,17 @@ const UsersList = () => {
                   },
                 }}
                 onClick={() => {
-                  selectUser(user.id);
+                  const user =
+                    chat.provider.id === currentUser.id
+                      ? chat.client
+                      : chat.provider;
+                  selectChat(chat.roomId, user);
                 }}
               >
-                <Typography>{user.name}</Typography>
-                {user.image ? (
+                <Typography>{chat.provider.name}</Typography>
+                {chat.provider.image ? (
                   <img
-                    src={user.image}
+                    src={chat.provider.image}
                     style={{
                       width: "40px",
                       height: "40px",
@@ -64,4 +70,4 @@ const UsersList = () => {
   );
 };
 
-export default UsersList;
+export default CreatedChatsList;

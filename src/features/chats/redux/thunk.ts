@@ -4,6 +4,7 @@ import {
   Message,
   OneUserResponse,
   RoomResponse,
+  RoomsResponse,
   UsersResponse,
 } from "../types";
 import {
@@ -13,6 +14,7 @@ import {
   createChatWithUserAPI,
   sendMessageAPI,
   getChatByRoomIdAPI,
+  getActiveChatsAPI,
 } from "../api";
 
 export const getUsersThunk = createAsyncThunk<
@@ -45,11 +47,11 @@ export const getOneUserThunk = createAsyncThunk<
 
 export const getChatByUsersThunk = createAsyncThunk<
   RoomResponse,
-  number[],
+  number,
   { rejectValue: string }
->("get-chat-by-users-thunk", async ([user1Id, user2Id], thunkAPI) => {
+>("get-chat-by-users-thunk", async (userId, thunkAPI) => {
   try {
-    const response = await getChatWithUserAPI(user1Id, user2Id);
+    const response = await getChatWithUserAPI(userId);
 
     return response.data;
   } catch (error) {
@@ -92,6 +94,20 @@ export const sendMessageThunk = createAsyncThunk<
 >("send-message", async (data, thunkAPI) => {
   try {
     const response = await sendMessageAPI(data);
+
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue("Server error!");
+  }
+});
+
+export const getActiveChatsThunk = createAsyncThunk<
+  RoomsResponse,
+  undefined,
+  { rejectValue: string }
+>("get-active-chats-thunk", async (_, thunkAPI) => {
+  try {
+    const response = await getActiveChatsAPI();
 
     return response.data;
   } catch (error) {

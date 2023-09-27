@@ -5,6 +5,7 @@ import {
   OneUserResponse,
   RoomResponse,
   UsersResponse,
+  RoomsResponse,
 } from "../types";
 
 export const getUsersAPI = async () => {
@@ -15,12 +16,12 @@ export const getOneUserAPI = async (id: number) => {
   return await api.get<OneUserResponse>(`/users/${id}`);
 };
 
-export const getChatWithUserAPI = async (user1Id: number, user2Id: number) => {
-  return await api.get<RoomResponse>(`/rooms/${user1Id}/${user2Id}`);
+export const getChatWithUserAPI = async (userId: number) => {
+  return await api.get<RoomResponse>(`/rooms/user/${userId}`);
 };
 
 export const getChatByRoomIdAPI = async (roomId: string) => {
-  return await api.get<RoomResponse>(`/rooms/roomId=${roomId}`);
+  return await api.get<RoomResponse>(`/rooms/active-room/${roomId}`);
 };
 
 export const createChatWithUserAPI = async (body: CreateRoomRequest) => {
@@ -29,4 +30,8 @@ export const createChatWithUserAPI = async (body: CreateRoomRequest) => {
 
 export const sendMessageAPI = async (body: Message) => {
   return await api.patch<RoomResponse>(`/rooms/send-message`, body);
+};
+
+export const getActiveChatsAPI = async () => {
+  return await api.get<RoomsResponse>(`/rooms/active-user-room`);
 };

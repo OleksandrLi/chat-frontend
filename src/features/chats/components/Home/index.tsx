@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import ROUTES from "../../../../routes/constants";
 import UsersList from "./UsersList";
 import { WebsocketContext } from "../../../../shared/context/WebsocketContext";
+import CreatedChatsList from "./CreatedChatsList";
 
 const Home = () => {
   const { onLogout } = useAuth();
@@ -45,7 +46,17 @@ const Home = () => {
         </Typography>
       </Box>
 
-      <UsersList />
+      <Box
+        sx={{
+          padding: "50px 50px 0",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <UsersList />
+        <CreatedChatsList />
+      </Box>
     </Box>
   );
 };

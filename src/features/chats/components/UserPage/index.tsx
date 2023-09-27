@@ -18,8 +18,7 @@ const User = () => {
 
   const createChat = () => {
     onCreateChat({
-      usersIds: [selectedUser.id, currentUser.id],
-      users: [currentUser, selectedUser],
+      providerId: selectedUser.id,
     });
   };
 
@@ -31,7 +30,7 @@ const User = () => {
 
   useEffect(() => {
     if (selectedUser.id && currentUser.id) {
-      onGetChatByUsers(selectedUser.id, currentUser.id);
+      onGetChatByUsers(selectedUser.id);
     }
   }, [selectedUser.id, currentUser.id]);
 

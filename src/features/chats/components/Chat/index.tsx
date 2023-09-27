@@ -33,55 +33,59 @@ function Chat() {
 
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [users, setUsers] = useState<User[]>(activeChat?.users || []);
+  const [users, setUsers] = useState<User[]>(
+    activeChat?.client && activeChat?.provider
+      ? [activeChat?.client, activeChat?.provider]
+      : []
+  );
 
-  useEffect(() => {
-    if (currentUser.id) {
-      socket.on("connect", () => {
-        socket.emit("join_room", {
-          roomId: chatId as string,
-          userId: currentUser.id,
-          socketId: socket.id,
-        });
-        setIsConnected(true);
-      });
-
-      socket.on("disconnect", () => {
-        setIsConnected(false);
-      });
-
-      socket.on("chat", (e) => {
-        setMessages((messages) => [...messages, e]);
-      });
-
-      socket.on("join_room", (e) => {
-        setUsers(e.users);
-        setMessages(e.messages);
-      });
-
-      socket.on("leave_room", (e) => {
-        setUsers(e);
-      });
-
-      socket.connect();
-    }
-
-    return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("chat");
-      socket.off("join_room");
-
-      socket.emit("leave_room", {
-        roomId: chatId as string,
-        userId: currentUser.id,
-        socketId: socket.id,
-      });
-
-      socket.off("leave_room");
-      socket.disconnect();
-    };
-  }, [currentUser.id, chatId]);
+  // useEffect(() => {
+  //   if (currentUser.id) {
+  //     socket.on("connect", () => {
+  //       socket.emit("join_room", {
+  //         roomId: chatId as string,
+  //         userId: currentUser.id,
+  //         socketId: socket.id,
+  //       });
+  //       setIsConnected(true);
+  //     });
+  //
+  //     socket.on("disconnect", () => {
+  //       setIsConnected(false);
+  //     });
+  //
+  //     socket.on("chat", (e) => {
+  //       setMessages((messages) => [...messages, e]);
+  //     });
+  //
+  //     socket.on("join_room", (e) => {
+  //       setUsers(e.users);
+  //       setMessages(e.messages);
+  //     });
+  //
+  //     socket.on("leave_room", (e) => {
+  //       setUsers(e);
+  //     });
+  //
+  //     socket.connect();
+  //   }
+  //
+  //   return () => {
+  //     socket.off("connect");
+  //     socket.off("disconnect");
+  //     socket.off("chat");
+  //     socket.off("join_room");
+  //
+  //     socket.emit("leave_room", {
+  //       roomId: chatId as string,
+  //       userId: currentUser.id,
+  //       socketId: socket.id,
+  //     });
+  //
+  //     socket.off("leave_room");
+  //     socket.disconnect();
+  //   };
+  // }, [currentUser.id, chatId]);
 
   const sendMessage = (message: string) => {
     const activeUsers = users.filter((user) => user.isOnline);
@@ -107,10 +111,10 @@ function Chat() {
   };
 
   useEffect(() => {
-    if (!activeChat && chatId) {
+    if (chatId) {
       onGetChatByRoomId(chatId);
     }
-  }, [activeChat, chatId]);
+  }, [chatId]);
 
   return (
     <Box
@@ -124,7 +128,7 @@ function Chat() {
         alignItems: "center",
       }}
     >
-      <Header users={users} />
+      <Header />
       <Box
         sx={{
           margin: "10px",

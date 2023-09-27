@@ -11,18 +11,21 @@ interface OneUserResponse {
 interface IRoom {
   id: number;
   roomId: string;
-  usersIds: number[];
   messages: Message[];
-  users: User[];
+  provider: User;
+  client: User;
 }
 
 interface RoomResponse {
   room: IRoom;
 }
 
+interface RoomsResponse {
+  rooms: IRoom[];
+}
+
 interface CreateRoomRequest {
-  usersIds: number[];
-  users: User[];
+  providerId: number;
 }
 
 interface Message {
@@ -55,4 +58,5 @@ export type {
   ClientToServerEvents,
   RoomResponse,
   CreateRoomRequest,
+  RoomsResponse,
 };

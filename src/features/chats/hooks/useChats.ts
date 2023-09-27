@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useAppSelector, useAppDispatch } from "../../../store";
 import {
   createChatWithUserThunk,
+  getActiveChatsThunk,
   getChatByRoomIdThunk,
   getChatByUsersThunk,
   getOneUserThunk,
@@ -11,7 +12,8 @@ import {
 import { CreateRoomRequest, Message } from "../types";
 import { useNavigate } from "react-router";
 import ROUTES from "../../../routes/constants";
-import { setStatus } from "../redux/slice";
+import { setStatus, setUser } from "../redux/slice";
+import { User } from "../../auth/types";
 
 export default function useChats() {
   const dispatch = useAppDispatch();
@@ -31,8 +33,8 @@ export default function useChats() {
   );
 
   const onGetChatByUsers = useCallback(
-    (user1Id: number, user2Id: number) => {
-      dispatch(getChatByUsersThunk([user1Id, user2Id]));
+    (user1Id: number) => {
+      dispatch(getChatByUsersThunk(user1Id));
     },
     [dispatch]
   );
@@ -69,6 +71,17 @@ export default function useChats() {
     [dispatch]
   );
 
+  const onGetActiveChats = useCallback(() => {
+    dispatch(getActiveChatsThunk());
+  }, [dispatch]);
+
+  const onSetUser = useCallback(
+    (payload: { user: User }) => {
+      dispatch(setUser(payload));
+    },
+    [dispatch]
+  );
+
   return {
     ...state,
     onGetUsers,
@@ -78,5 +91,7 @@ export default function useChats() {
     onCreateChat,
     onSendMessage,
     onSetStatus,
+    onGetActiveChats,
+    onSetUser,
   };
 }

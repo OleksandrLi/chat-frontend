@@ -1,21 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { User } from "../../../auth/types";
+import React from "react";
 import { Box, Typography } from "@mui/material";
-import { useAuth } from "../../../../hooks";
+import { useChats } from "../../../../hooks";
 
-type HeaderProps = {
-  users: User[];
-};
-
-export const Header: React.FC<HeaderProps> = ({ users }) => {
-  const { currentUser } = useAuth();
-
-  const [user, setUser] = useState<User>({} as User);
-
-  useEffect(() => {
-    const selectedUser = users.filter((user) => user.id !== currentUser.id)[0];
-    setUser(selectedUser);
-  }, [currentUser, users]);
+export const Header = () => {
+  const { selectedUser } = useChats();
 
   return (
     <Box
@@ -28,7 +16,7 @@ export const Header: React.FC<HeaderProps> = ({ users }) => {
         gap: "5px",
       }}
     >
-      {user?.image ? (
+      {selectedUser?.image ? (
         <Box
           sx={{
             width: "35px",
@@ -37,14 +25,14 @@ export const Header: React.FC<HeaderProps> = ({ users }) => {
         >
           <img
             style={{ width: "100%", height: "100%", borderRadius: "50%" }}
-            src={user.image}
+            src={selectedUser.image}
           />
         </Box>
       ) : null}
-      <Typography>{user?.name}</Typography>
+      <Typography>{selectedUser?.name}</Typography>
       <Typography
         sx={{
-          background: user?.isOnline ? "#228B22" : "#bf2323",
+          background: selectedUser?.isOnline ? "#228B22" : "#bf2323",
           color: "transparent",
           width: "9px",
           height: "9px",
