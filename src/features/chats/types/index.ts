@@ -29,12 +29,18 @@ interface CreateRoomRequest {
 }
 
 interface Message {
+  id: number | string;
   user: User;
   timeSent: Date;
   message: string;
   roomId: string;
-  messageId: string;
   isRead?: boolean;
+}
+
+interface SendMessageRequest {
+  timeSent: Date;
+  message: string;
+  roomId: string;
 }
 
 interface ServerToClientEvents {
@@ -59,4 +65,5 @@ export type {
   RoomResponse,
   CreateRoomRequest,
   RoomsResponse,
+  SendMessageRequest,
 };

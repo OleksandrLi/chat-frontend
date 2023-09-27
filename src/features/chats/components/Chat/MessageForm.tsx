@@ -1,11 +1,17 @@
 import React, { useState, KeyboardEvent } from "react";
 import { Box, Input, FormControl, Button } from "@mui/material";
+import { useParams } from "react-router";
+import { useChats } from "../../../../hooks";
 
 type MessageFormProps = {
   sendMessage: (message: string) => void;
 };
 
 export const MessageForm: React.FC<MessageFormProps> = ({ sendMessage }) => {
+  const { chatId } = useParams();
+
+  const { activeChat } = useChats();
+
   const [text, setText] = useState("");
 
   const handleSend = () => {
@@ -16,7 +22,7 @@ export const MessageForm: React.FC<MessageFormProps> = ({ sendMessage }) => {
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Enter") {
+    if (chatId && e.key === "Enter") {
       handleSend();
     }
   };
@@ -62,6 +68,7 @@ export const MessageForm: React.FC<MessageFormProps> = ({ sendMessage }) => {
               textTransform: "none",
             }}
             onClick={handleSend}
+            disabled={!chatId || !activeChat}
           >
             Send
           </Button>

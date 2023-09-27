@@ -41,6 +41,16 @@ export const chatsSlice = createSlice({
     setUser: (state, action) => {
       state.selectedUser = action.payload.user;
     },
+    setNewMessage: (state, action) => {
+      if (state.activeChat) {
+        action.payload.message.user.id === state.selectedUser?.id
+          ? (state.activeChat.messages = [
+              ...state.activeChat.messages,
+              action.payload.message,
+            ])
+          : state.activeChat.messages;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUsersThunk.pending, (state) => {
@@ -110,11 +120,11 @@ export const chatsSlice = createSlice({
     builder.addCase(sendMessageThunk.pending, (state) => {
       state.isLoading = true;
     });
-    builder.addCase(sendMessageThunk.fulfilled, (state) => {
+    builder.addCase(sendMessageThunk.fulfilled, (state, { payload }) => {
       state.isLoading = false;
-      // if (state.activeChat) {
-      //   state.activeChat.messages = payload.room?.messages;
-      // }
+      if (state.activeChat) {
+        state.activeChat.messages = [...state.activeChat.messages, payload];
+      }
     });
     builder.addCase(sendMessageThunk.rejected, (state, action) => {
       state.isLoading = false;
@@ -135,5 +145,5 @@ export const chatsSlice = createSlice({
   },
 });
 
-export const { setStatus, setUser } = chatsSlice.actions;
+export const { setStatus, setUser, setNewMessage } = chatsSlice.actions;
 export default chatsSlice.reducer;

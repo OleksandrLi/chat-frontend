@@ -2,17 +2,17 @@ import React, { useEffect, useRef } from "react";
 import { User } from "../../../auth/types";
 import { Message } from "../../types";
 import { Box, Typography } from "@mui/material";
-import { useChats } from "../../../../hooks";
+import { useAuth, useChats } from "../../../../hooks";
 import CheckIcon from "@mui/icons-material/Check";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import dayjs from "dayjs";
 
 type MessageProps = {
-  user: User;
   messages: Message[];
 };
 
-export const Messages: React.FC<MessageProps> = ({ user, messages }) => {
+export const Messages: React.FC<MessageProps> = ({ messages }) => {
+  const { currentUser } = useAuth();
   const { activeChat } = useChats();
 
   const bottomEl = useRef(null) as any;
@@ -54,10 +54,9 @@ export const Messages: React.FC<MessageProps> = ({ user, messages }) => {
           gap: "10px",
         }}
       >
-        {/*{activeChat?.messages?.length ? (*/}
-        {/*  <MessagesList user={user} messages={activeChat.messages} />*/}
-        {/*) : null}*/}
-        <MessagesList user={user} messages={messages} />
+        {activeChat ? (
+          <MessagesList user={currentUser} messages={activeChat.messages} />
+        ) : null}
       </Box>
     </Box>
   );
@@ -77,7 +76,7 @@ export const MessagesList: React.FC<MessagesListProps> = ({
       {messages?.map((message) => {
         return (
           <Box
-            key={message.messageId}
+            key={message.id}
             sx={{
               fontSize: "14px",
               marginLeft: message.user.id === user.id ? "auto" : "initial",
@@ -100,7 +99,6 @@ export const MessagesList: React.FC<MessagesListProps> = ({
                 component="p"
                 sx={{
                   fontSize: "16px",
-                  // textAlign: message.user.id === user.id ? "right" : "left",
                   width: "fit-content",
                   maxWidth: "100%",
                   textWrap: "wrap",
@@ -129,7 +127,6 @@ export const MessagesList: React.FC<MessagesListProps> = ({
                 sx={{
                   fontStyle: "italic",
                   fontSize: "11px",
-                  // textAlign: message.user.id === user.id ? "right" : "left",
                 }}
               >
                 {dayjs(message.timeSent).format("YYYY-MM-DD HH:mm:ss")}

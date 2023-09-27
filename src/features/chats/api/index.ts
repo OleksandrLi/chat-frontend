@@ -1,11 +1,12 @@
 import api from "../../../api";
 import {
   CreateRoomRequest,
-  Message,
   OneUserResponse,
   RoomResponse,
   UsersResponse,
   RoomsResponse,
+  SendMessageRequest,
+  Message,
 } from "../types";
 
 export const getUsersAPI = async () => {
@@ -28,8 +29,8 @@ export const createChatWithUserAPI = async (body: CreateRoomRequest) => {
   return await api.post<RoomResponse>(`/rooms`, body);
 };
 
-export const sendMessageAPI = async (body: Message) => {
-  return await api.patch<RoomResponse>(`/rooms/send-message`, body);
+export const sendMessageAPI = async (body: SendMessageRequest) => {
+  return await api.patch<Message>(`/rooms/send-message`, body);
 };
 
 export const getActiveChatsAPI = async () => {

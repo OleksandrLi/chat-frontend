@@ -5,6 +5,7 @@ import {
   OneUserResponse,
   RoomResponse,
   RoomsResponse,
+  SendMessageRequest,
   UsersResponse,
 } from "../types";
 import {
@@ -88,8 +89,8 @@ export const createChatWithUserThunk = createAsyncThunk<
 });
 
 export const sendMessageThunk = createAsyncThunk<
-  RoomResponse,
   Message,
+  SendMessageRequest,
   { rejectValue: string }
 >("send-message", async (data, thunkAPI) => {
   try {

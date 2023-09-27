@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { io, Socket } from "socket.io-client";
+import React, { useState, useEffect, useContext } from "react";
 import { Box } from "@mui/material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 
@@ -7,37 +6,28 @@ import { useAuth, useChats } from "../../../../hooks";
 import { useNavigate, useParams } from "react-router";
 import { Messages } from "./Messages";
 import { MessageForm } from "./MessageForm";
-import {
-  ServerToClientEvents,
-  ClientToServerEvents,
-  Message,
-} from "../../types";
-import config from "../../../../constants/config";
+import { Message } from "../../types";
 import ROUTES from "../../../../routes/constants";
 import { User } from "../../../auth/types";
 import { Header } from "./Header";
-
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  config.API_URL,
-  {
-    autoConnect: false,
-  }
-);
+import { WebsocketContext } from "../../../../shared/context/WebsocketContext";
 
 function Chat() {
   const { chatId } = useParams();
   const navigate = useNavigate();
 
-  const { currentUser } = useAuth();
-  const { onSendMessage, onGetChatByRoomId, activeChat } = useChats();
+  const websocket = useContext(WebsocketContext);
 
-  const [isConnected, setIsConnected] = useState(socket.connected);
+  const { currentUser } = useAuth();
+  const {
+    onSendMessage,
+    onGetChatByRoomId,
+    activeChat,
+    onSetUser,
+    onSetNewMessage,
+  } = useChats();
+
   const [messages, setMessages] = useState<Message[]>([]);
-  const [users, setUsers] = useState<User[]>(
-    activeChat?.client && activeChat?.provider
-      ? [activeChat?.client, activeChat?.provider]
-      : []
-  );
 
   // useEffect(() => {
   //   if (currentUser.id) {
@@ -87,27 +77,33 @@ function Chat() {
   //   };
   // }, [currentUser.id, chatId]);
 
-  const sendMessage = (message: string) => {
-    const activeUsers = users.filter((user) => user.isOnline);
-    const getMessageData = (isSocket?: boolean) => {
-      const messageData = {
-        user: {
-          id: currentUser.id,
-          name: currentUser.name,
-        } as any,
-        timeSent: new Date(Date.now()),
-        message,
-        roomId: chatId,
-        isRead: activeUsers.length === 2,
-      };
-      if (isSocket) {
-        messageData.user.socketId = socket.id;
-      }
-      return messageData;
-    };
+  useEffect(() => {
+    if (websocket) {
+      websocket?.on("chat", (data: Message) => {
+        onSetNewMessage({ message: data });
+      });
+    }
 
-    socket.emit("chat", getMessageData(true) as any);
-    onSendMessage(getMessageData() as Message);
+    return () => {
+      if (websocket) {
+        websocket.off("chat");
+      }
+    };
+  }, [websocket]);
+
+  const sendMessage = (message: string) => {
+    if (chatId) {
+      const getMessageData = () => {
+        const messageData = {
+          timeSent: new Date(Date.now()),
+          message,
+          roomId: chatId,
+        };
+        return messageData;
+      };
+
+      onSendMessage(getMessageData());
+    }
   };
 
   useEffect(() => {
@@ -115,6 +111,16 @@ function Chat() {
       onGetChatByRoomId(chatId);
     }
   }, [chatId]);
+
+  useEffect(() => {
+    if (activeChat && currentUser) {
+      const user =
+        activeChat.provider.id === currentUser.id
+          ? activeChat.client
+          : activeChat.provider;
+      onSetUser({ user: user });
+    }
+  }, [activeChat, currentUser]);
 
   return (
     <Box
@@ -158,9 +164,7 @@ function Chat() {
         >
           <FirstPageIcon fontSize="large" />
         </Box>
-        {currentUser ? (
-          <Messages user={currentUser} messages={messages} />
-        ) : null}
+        {currentUser ? <Messages messages={messages} /> : null}
         <MessageForm sendMessage={sendMessage} />
       </Box>
     </Box>
