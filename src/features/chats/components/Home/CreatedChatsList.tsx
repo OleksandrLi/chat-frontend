@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, List, ListItem, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 import ROUTES from "../../../../routes/constants";
@@ -51,10 +51,22 @@ const CreatedChatsList = () => {
                   selectChat(chat.roomId, user);
                 }}
               >
-                <Typography>{chat.provider.name}</Typography>
-                {chat.provider.image ? (
+                <Typography>
+                  {chat.provider.id === currentUser.id
+                    ? chat.client.name
+                    : chat.provider.name}
+                </Typography>
+                {(
+                  chat.provider.id === currentUser.id
+                    ? chat.client.image
+                    : chat.provider.image
+                ) ? (
                   <img
-                    src={chat.provider.image}
+                    src={
+                      chat.provider.id === currentUser.id
+                        ? chat.client.image
+                        : chat.provider.image
+                    }
                     style={{
                       width: "40px",
                       height: "40px",

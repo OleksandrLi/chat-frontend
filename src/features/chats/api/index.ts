@@ -36,3 +36,7 @@ export const sendMessageAPI = async (body: SendMessageRequest) => {
 export const getActiveChatsAPI = async () => {
   return await api.get<RoomsResponse>(`/rooms/active-user-room`);
 };
+
+export const readMessagesAPI = async (roomId: string) => {
+  return await api.patch(`/rooms/${roomId}/read-messages`);
+};

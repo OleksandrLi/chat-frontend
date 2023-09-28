@@ -8,6 +8,7 @@ import {
   getChatByUsersThunk,
   getOneUserThunk,
   getUsersThunk,
+  onReadMessagesThunk,
   sendMessageThunk,
 } from "./thunk";
 import { IRoom } from "../types";
@@ -43,12 +44,23 @@ export const chatsSlice = createSlice({
     },
     setNewMessage: (state, action) => {
       if (state.activeChat) {
-        action.payload.message.user.id === state.selectedUser?.id
+        action.payload.message.user.id === state.selectedUser?.id &&
+        action.payload.message.roomId === state.activeChat.roomId
           ? (state.activeChat.messages = [
               ...state.activeChat.messages,
               action.payload.message,
             ])
           : state.activeChat.messages;
+      }
+    },
+    setMessagesRead: (state, action) => {
+      if (state.activeChat) {
+        state.activeChat.messages = state.activeChat.messages.map((message) => {
+          if (action.payload.messagesIds.includes(message.id)) {
+            return { ...message, isRead: true };
+          }
+          return message;
+        });
       }
     },
   },
@@ -142,8 +154,20 @@ export const chatsSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     });
+
+    builder.addCase(onReadMessagesThunk.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(onReadMessagesThunk.fulfilled, (state) => {
+      state.isLoading = false;
+    });
+    builder.addCase(onReadMessagesThunk.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
   },
 });
 
-export const { setStatus, setUser, setNewMessage } = chatsSlice.actions;
+export const { setStatus, setUser, setNewMessage, setMessagesRead } =
+  chatsSlice.actions;
 export default chatsSlice.reducer;

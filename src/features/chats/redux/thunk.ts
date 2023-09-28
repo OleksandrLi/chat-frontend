@@ -16,6 +16,7 @@ import {
   sendMessageAPI,
   getChatByRoomIdAPI,
   getActiveChatsAPI,
+  readMessagesAPI,
 } from "../api";
 
 export const getUsersThunk = createAsyncThunk<
@@ -109,6 +110,20 @@ export const getActiveChatsThunk = createAsyncThunk<
 >("get-active-chats-thunk", async (_, thunkAPI) => {
   try {
     const response = await getActiveChatsAPI();
+
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue("Server error!");
+  }
+});
+
+export const onReadMessagesThunk = createAsyncThunk<
+  undefined,
+  string,
+  { rejectValue: string }
+>("read-messages", async (roomId, thunkAPI) => {
+  try {
+    const response = await readMessagesAPI(roomId);
 
     return response.data;
   } catch (error) {

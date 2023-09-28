@@ -7,12 +7,18 @@ import {
   getChatByUsersThunk,
   getOneUserThunk,
   getUsersThunk,
+  onReadMessagesThunk,
   sendMessageThunk,
 } from "../redux/thunk";
 import { CreateRoomRequest, Message, SendMessageRequest } from "../types";
 import { useNavigate } from "react-router";
 import ROUTES from "../../../routes/constants";
-import { setStatus, setUser, setNewMessage } from "../redux/slice";
+import {
+  setStatus,
+  setUser,
+  setNewMessage,
+  setMessagesRead,
+} from "../redux/slice";
 import { User } from "../../auth/types";
 
 export default function useChats() {
@@ -89,6 +95,20 @@ export default function useChats() {
     [dispatch]
   );
 
+  const onReadMessages = useCallback(
+    (roomId: string) => {
+      dispatch(onReadMessagesThunk(roomId));
+    },
+    [dispatch]
+  );
+
+  const onSetMessagesRead = useCallback(
+    (payload: { messagesIds: number[] }) => {
+      dispatch(setMessagesRead(payload));
+    },
+    [dispatch]
+  );
+
   return {
     ...state,
     onGetUsers,
@@ -101,5 +121,7 @@ export default function useChats() {
     onGetActiveChats,
     onSetUser,
     onSetNewMessage,
+    onReadMessages,
+    onSetMessagesRead,
   };
 }

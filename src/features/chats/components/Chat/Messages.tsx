@@ -6,14 +6,13 @@ import { useAuth, useChats } from "../../../../hooks";
 import CheckIcon from "@mui/icons-material/Check";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import dayjs from "dayjs";
+import { useParams } from "react-router";
 
-type MessageProps = {
-  messages: Message[];
-};
+export const Messages = () => {
+  const { chatId } = useParams();
 
-export const Messages: React.FC<MessageProps> = ({ messages }) => {
   const { currentUser } = useAuth();
-  const { activeChat } = useChats();
+  const { activeChat, onReadMessages } = useChats();
 
   const bottomEl = useRef(null) as any;
 
@@ -22,14 +21,22 @@ export const Messages: React.FC<MessageProps> = ({ messages }) => {
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  useEffect(() => {
     if (bottomEl && activeChat?.messages?.length) {
       scrollToBottom();
     }
   }, [bottomEl, activeChat]);
+
+  useEffect(() => {
+    if (chatId && activeChat) {
+      if (
+        !activeChat.messages[activeChat.messages.length - 1].isRead &&
+        activeChat.messages[activeChat.messages.length - 1].user.id !==
+          currentUser.id
+      ) {
+        onReadMessages(chatId);
+      }
+    }
+  }, [chatId, activeChat?.messages.length]);
 
   return (
     <Box

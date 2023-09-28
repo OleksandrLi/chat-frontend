@@ -8,7 +8,6 @@ import { Messages } from "./Messages";
 import { MessageForm } from "./MessageForm";
 import { Message } from "../../types";
 import ROUTES from "../../../../routes/constants";
-import { User } from "../../../auth/types";
 import { Header } from "./Header";
 import { WebsocketContext } from "../../../../shared/context/WebsocketContext";
 
@@ -25,68 +24,35 @@ function Chat() {
     activeChat,
     onSetUser,
     onSetNewMessage,
+    onReadMessages,
+    onSetMessagesRead,
   } = useChats();
 
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  // useEffect(() => {
-  //   if (currentUser.id) {
-  //     socket.on("connect", () => {
-  //       socket.emit("join_room", {
-  //         roomId: chatId as string,
-  //         userId: currentUser.id,
-  //         socketId: socket.id,
-  //       });
-  //       setIsConnected(true);
-  //     });
-  //
-  //     socket.on("disconnect", () => {
-  //       setIsConnected(false);
-  //     });
-  //
-  //     socket.on("chat", (e) => {
-  //       setMessages((messages) => [...messages, e]);
-  //     });
-  //
-  //     socket.on("join_room", (e) => {
-  //       setUsers(e.users);
-  //       setMessages(e.messages);
-  //     });
-  //
-  //     socket.on("leave_room", (e) => {
-  //       setUsers(e);
-  //     });
-  //
-  //     socket.connect();
-  //   }
-  //
-  //   return () => {
-  //     socket.off("connect");
-  //     socket.off("disconnect");
-  //     socket.off("chat");
-  //     socket.off("join_room");
-  //
-  //     socket.emit("leave_room", {
-  //       roomId: chatId as string,
-  //       userId: currentUser.id,
-  //       socketId: socket.id,
-  //     });
-  //
-  //     socket.off("leave_room");
-  //     socket.disconnect();
-  //   };
-  // }, [currentUser.id, chatId]);
+  useEffect(() => {
+    if (chatId) {
+      onReadMessages(chatId);
+    }
+  }, [chatId]);
 
   useEffect(() => {
     if (websocket) {
-      websocket?.on("chat", (data: Message) => {
+      websocket.on("chat", (data: Message) => {
         onSetNewMessage({ message: data });
       });
+      websocket.on(
+        "read_messages",
+        (data: { roomId: string; messagesIds: number[] }) => {
+          if (chatId === data.roomId) {
+            onSetMessagesRead({ messagesIds: data.messagesIds });
+          }
+        }
+      );
     }
 
     return () => {
       if (websocket) {
         websocket.off("chat");
+        websocket.off("read_messages");
       }
     };
   }, [websocket]);
@@ -164,7 +130,7 @@ function Chat() {
         >
           <FirstPageIcon fontSize="large" />
         </Box>
-        {currentUser ? <Messages messages={messages} /> : null}
+        {currentUser ? <Messages /> : null}
         <MessageForm sendMessage={sendMessage} />
       </Box>
     </Box>
