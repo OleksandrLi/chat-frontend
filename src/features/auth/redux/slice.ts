@@ -70,7 +70,7 @@ export const authSlice = createSlice({
     builder.addCase(refreshTokensThunk.pending, (state) => {
       state.isLoading = true;
     });
-    builder.addCase(refreshTokensThunk.fulfilled, (state, { payload }) => {
+    builder.addCase(refreshTokensThunk.fulfilled, (state) => {
       state.isLoading = false;
       state.isAuth = true;
     });

@@ -7,7 +7,7 @@ import {
   FormHelperText,
 } from "@mui/material";
 import React from "react";
-import { useFormik } from "formik";
+import { useFormik, FormikErrors } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
@@ -44,7 +44,13 @@ const Login = () => {
         successFn: () => {
           navigate(ROUTES.home);
         },
-        errorFn: (error: any) => {
+        errorFn: (
+          error: FormikErrors<{
+            email: string;
+            password: string;
+            message: string;
+          }>
+        ) => {
           setStatus({ success: false });
           setSubmitting(false);
           setErrors(error);

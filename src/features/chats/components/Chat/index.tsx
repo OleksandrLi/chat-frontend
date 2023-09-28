@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { Box } from "@mui/material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 
@@ -60,12 +60,11 @@ function Chat() {
   const sendMessage = (message: string) => {
     if (chatId) {
       const getMessageData = () => {
-        const messageData = {
+        return {
           timeSent: new Date(Date.now()),
           message,
           roomId: chatId,
         };
-        return messageData;
       };
 
       onSendMessage(getMessageData());

@@ -19,11 +19,4 @@ const PasswordStateLabel = styled(Typography)`
   padding-left: 15px;
 `;
 
-const LogoContainer = styled("div")`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding-bottom: 30px;
-`;
-
-export { Wrapper, SingUpLabel, PasswordStateLabel, LogoContainer };
+export { Wrapper, SingUpLabel, PasswordStateLabel };

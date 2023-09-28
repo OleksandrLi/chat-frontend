@@ -11,7 +11,6 @@ import {
   saveRefreshInSessionStorage,
   STORAGE_KEYS,
 } from "../utils/localStorage";
-import { LoginResponse, TokensResponse } from "../features/auth/types";
 import ROUTES from "../routes/constants";
 import { refreshTokensAPI } from "../features/auth/api";
 

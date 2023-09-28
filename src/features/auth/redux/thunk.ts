@@ -41,7 +41,6 @@ export const signUpThunk = createAsyncThunk<
 
     data.successFn();
     return response.data;
-    throw new AxiosError();
   } catch (error) {
     if (error instanceof AxiosError) {
       const errors = error?.response?.data?.errors;
@@ -70,7 +69,6 @@ export const loginThunk = createAsyncThunk<
 
     successFn();
     return response.data;
-    throw new AxiosError();
   } catch (error) {
     if (error instanceof AxiosError) {
       const errors = error?.response?.data?.errors;

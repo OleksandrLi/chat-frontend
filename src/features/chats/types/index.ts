@@ -43,25 +43,11 @@ interface SendMessageRequest {
   roomId: string;
 }
 
-interface ServerToClientEvents {
-  chat: (e: Message) => void;
-  join_room: (e: { users: User[]; messages: Message[] }) => void;
-  leave_room: (e: User[]) => void;
-}
-
-interface ClientToServerEvents {
-  chat: (e: Message) => void;
-  join_room: (e: { roomId: string; userId: number; socketId: string }) => void;
-  leave_room: (e: { roomId: string; userId: number; socketId: string }) => void;
-}
-
 export type {
   UsersResponse,
   OneUserResponse,
   IRoom,
   Message,
-  ServerToClientEvents,
-  ClientToServerEvents,
   RoomResponse,
   CreateRoomRequest,
   RoomsResponse,

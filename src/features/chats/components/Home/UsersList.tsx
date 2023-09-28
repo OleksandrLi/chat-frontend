@@ -48,6 +48,7 @@ const UsersList = () => {
                 <Typography>{user.name}</Typography>
                 {user.image ? (
                   <img
+                    alt="avatar"
                     src={user.image}
                     style={{
                       width: "40px",

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Box, List, ListItem, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 import ROUTES from "../../../../routes/constants";
@@ -62,6 +62,7 @@ const CreatedChatsList = () => {
                     : chat.provider.image
                 ) ? (
                   <img
+                    alt="avatar"
                     src={
                       chat.provider.id === currentUser.id
                         ? chat.client.image
